@@ -14,7 +14,7 @@ mysql> GRANT ALL PRIVILEGES ON * . * TO 'codingkapoor'@'localhost';
 
 ### Create Database
 ```
-$mysql -u codingkapoor -u
+$ mysql -u codingkapoor -u
 mysql > CREATE DATABASE lagom_scala_slick;
 ```
 
@@ -57,7 +57,7 @@ $ curl http://localhost:9008/services
 
 ### Create Employee
 ```
-curl -X POST \
+$ curl -X POST \
   http://localhost:9000/api/employees \
   -H 'cache-control: no-cache' \
   -H 'content-type: application/json' \
