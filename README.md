@@ -1,5 +1,5 @@
 # lagom-scala-slick
-This project aims to demonstrate implementing lagom readside mixed persistence using Slick.
+This project aims to demonstrate implementing lagom polyglot readside persistence using Slick.
 
 ## Scope
 CRUD Apis for employees.
