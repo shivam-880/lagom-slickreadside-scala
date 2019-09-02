@@ -1,4 +1,4 @@
-# lagom-scala-slick
+# lagom-slickreadside-scala
 This project aims to demonstrate implementing Lagom polyglot readside persistence using Slick.
 
 ## Scope
@@ -15,18 +15,18 @@ mysql> GRANT ALL PRIVILEGES ON * . * TO 'codingkapoor'@'localhost';
 ### Create Database
 ```
 $ mysql -u codingkapoor -u
-mysql > CREATE DATABASE lagom_scala_slick;
+mysql > CREATE DATABASE slickreadside;
 ```
 
 ## Dev
 ### Clone Repo
 ```
-$ git clone git@github.com:codingkapoor/lagom-scala-slick.git
+$ git clone git@github.com:codingkapoor/lagom-slickreadside-scala.git
 ```
 
 ### Start All Services
 ```
-$ cd lagom-scala-slick
+$ cd lagom-slickreadside-scala
 $ sbt
 sbt> runAll
 
@@ -84,7 +84,7 @@ $ /opt/kafka_2.12-1.0.0/bin/kafka-console-consumer.sh --topic employee --bootstr
 ### Verify Cassandra
 ```
 $ /opt/apache-cassandra-3.11.4/bin/cqlsh localhost 4000
-cqlsh> USE lagom_scala_slick;
+cqlsh> USE slickreadside;
 cqlsh:simplelms> select * from messages ;
 
  persistence_id                                 | partition_nr | sequence_nr | timestamp                            | timebucket | used | event                                                                                                                                                                                                                                                                                                                                      | event_manifest | message | meta | meta_ser_id | meta_ser_manifest | ser_id  | ser_manifest                                              | tag1                                                      | tag2 | tag3 | writer_uuid
@@ -102,7 +102,7 @@ cqlsh:simplelms> select * from messages ;
 ### Verify Mysql
 ```
 $ mysql -u codingkapoor -p
-mysql> USE lagom_scala_slick;
+mysql> USE slickreadside;
 mysql> SELECT * FROM employee;
 +-----+--------+--------+------------+---------+
 | ID  | NAME   | GENDER | DOJ        | PFN     |
