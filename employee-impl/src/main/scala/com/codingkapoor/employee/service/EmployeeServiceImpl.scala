@@ -6,9 +6,7 @@ import com.codingkapoor.employee.api.{Employee, EmployeeService}
 import com.codingkapoor.employee.persistence.read.{EmployeeEntity, EmployeeRepository}
 import com.codingkapoor.employee.persistence.write._
 import com.lightbend.lagom.scaladsl.api.ServiceCall
-import com.lightbend.lagom.scaladsl.api.broker.Topic
-import com.lightbend.lagom.scaladsl.broker.TopicProducer
-import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRegistry}
+import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
 import com.lightbend.lagom.scaladsl.api.transport.{BadRequest, NotFound}
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntity.InvalidCommandException
 import org.slf4j.LoggerFactory

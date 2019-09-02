@@ -4,10 +4,6 @@ import akka.{Done, NotUsed}
 import com.lightbend.lagom.scaladsl.api.transport.Method
 import com.lightbend.lagom.scaladsl.api.{Descriptor, Service, ServiceCall}
 
-object EmployeeService {
-  val TOPIC_NAME = "employee"
-}
-
 trait EmployeeService extends Service {
 
   def addEmployee(): ServiceCall[Employee, Done]

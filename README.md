@@ -71,16 +71,6 @@ $ curl -X POST \
 }'
 ```
 
-### Verify Kafka
-```
-$ /opt/kafka_2.12-1.0.0/bin/kafka-topics.sh --zookeeper localhost:2181 --list
-__consumer_offsets
-employee
-
-$ /opt/kafka_2.12-1.0.0/bin/kafka-console-consumer.sh --topic employee --bootstrap-server localhost:9092 --from-beginning
-{"gender":"M","name":"Shivam","pfn":"PFKN110","id":"128","type":"EmployeeAdded","doj":"2017-01-16"}
-```
-
 ### Verify Cassandra
 ```
 $ /opt/apache-cassandra-3.11.4/bin/cqlsh localhost 4000

@@ -25,7 +25,6 @@ lazy val `employee-impl` = (project in file("employee-impl"))
     libraryDependencies ++= Seq(
       lagomScaladslPersistenceCassandra,
       lagomScaladslPersistenceJdbc,
-      lagomScaladslKafkaBroker,
       lagomScaladslTestKit,
       mysql,
       macwire,
