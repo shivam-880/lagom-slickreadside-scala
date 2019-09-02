@@ -12,7 +12,7 @@ class EmployeePersistenceEntity extends PersistentEntity {
 
   override def behavior: Behavior = {
     case state if state.isEmpty => initial
-    case state if state.isDefined => postAdded
+    case state if state.isDefined => employeeAdded
   }
 
   private val initial: Actions =
@@ -30,7 +30,7 @@ class EmployeePersistenceEntity extends PersistentEntity {
         Some(EmployeeState(id, name, gender, doj, pfn))
     }
 
-  private val postAdded: Actions =
+  private val employeeAdded: Actions =
     Actions().onCommand[AddEmployee, Done]{
       case (AddEmployee(e), ctx, _) =>
         ctx.invalidCommand(s"Employee with id = ${e.id} already exists.")
