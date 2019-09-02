@@ -20,7 +20,7 @@ trait EmployeeService extends Service {
 
   def getEmployee(id: String): ServiceCall[NotUsed, Employee]
 
-  def employeeTopic: Topic[EmployeeEvent]
+  def employeeTopic: Topic[EmployeeKafkaEvent]
 
   override final def descriptor: Descriptor = {
     import Service._
@@ -36,7 +36,7 @@ trait EmployeeService extends Service {
         topic(EmployeeService.TOPIC_NAME, employeeTopic _)
           .addProperty(
             KafkaProperties.partitionKeyStrategy,
-            PartitionKeyStrategy[EmployeeEvent](_.id)
+            PartitionKeyStrategy[EmployeeKafkaEvent](_.id)
           ))
       .withAutoAcl(true)
   }
