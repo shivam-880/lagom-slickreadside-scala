@@ -50,24 +50,9 @@ class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, em
       }
     }
   }
-
-  override def employeeTopic: Topic[api.EmployeeKafkaEvent] = {
-    TopicProducer.singleStreamWithOffset { fromOffset =>
-      persistentEntityRegistry.eventStream(EmployeeEvent.Tag, fromOffset)
-        .map(event => (convertPersistentEntityEventToKafkaEvent(event), event.offset))
-    }
-  }
-
 }
 
 object EmployeeServiceImpl {
-
-  private def convertPersistentEntityEventToKafkaEvent(eventStreamElement: EventStreamElement[EmployeeEvent]): api.EmployeeKafkaEvent = {
-    eventStreamElement.event match {
-      case EmployeeAdded(id, name, gender, doj, pfn) => api.EmployeeAddedKafkaEvent(id, name, gender, doj, pfn)
-      case EmployeeUpdated(id, name, gender, doj, pfn) => api.EmployeeUpdatedKafkaEvent(id, name, gender, doj, pfn)
-    }
-  }
 
   private def convertEmployeeReadEntityToEmployee(e: EmployeeEntity): api.Employee = {
     api.Employee(e.id, e.name, e.gender, e.doj, e.pfn)

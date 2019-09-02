@@ -4,7 +4,6 @@ import com.codingkapoor.employee.api.EmployeeService
 import com.codingkapoor.employee.persistence.read.{EmployeeEventProcessor, EmployeeRepository}
 import com.codingkapoor.employee.persistence.write.{EmployeePersistenceEntity, EmployeeSerializerRegistry}
 import com.codingkapoor.employee.service.EmployeeServiceImpl
-import com.lightbend.lagom.scaladsl.broker.kafka.LagomKafkaComponents
 import com.lightbend.lagom.scaladsl.persistence.cassandra.WriteSideCassandraPersistenceComponents
 import com.lightbend.lagom.scaladsl.persistence.jdbc.ReadSideJdbcPersistenceComponents
 import com.lightbend.lagom.scaladsl.server.{LagomApplication, LagomApplicationContext}
@@ -15,7 +14,6 @@ import play.api.libs.ws.ahc.AhcWSComponents
 
 abstract class EmployeeApplication(context: LagomApplicationContext)
   extends LagomApplication(context)
-    with LagomKafkaComponents
     with ReadSideJdbcPersistenceComponents
     with SlickPersistenceComponents
     with WriteSideCassandraPersistenceComponents
