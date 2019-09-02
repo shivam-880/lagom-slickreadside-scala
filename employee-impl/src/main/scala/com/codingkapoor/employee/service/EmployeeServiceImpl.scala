@@ -13,6 +13,9 @@ import com.lightbend.lagom.scaladsl.api.transport.NotFound
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, employeeRepository: EmployeeRepository) extends EmployeeService {
+
+  import EmployeeServiceImpl._
+
   private def entityRef(id: String) = persistentEntityRegistry.refFor[EmployeePersistenceEntity](id)
 
   override def addEmployee(): ServiceCall[Employee, Done] = ServiceCall { employee =>
@@ -40,6 +43,10 @@ class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, em
         .map(event => (convertPersistentEntityEventToKafkaEvent(event), event.offset))
     }
   }
+
+}
+
+object EmployeeServiceImpl {
 
   private def convertPersistentEntityEventToKafkaEvent(eventStreamElement: EventStreamElement[EmployeeEvent]): api.EmployeeKafkaEvent = {
     eventStreamElement.event match {
