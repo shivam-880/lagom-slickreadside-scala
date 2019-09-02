@@ -1,7 +1,6 @@
 package com.codingkapoor.employee.persistence.read
 
 import akka.Done
-import com.codingkapoor.employee.api.Employee
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api._
 
@@ -20,16 +19,12 @@ class EmployeeRepository(db: Database) {
     employees.insertOrUpdate(employee).map(_ => Done)
   }
 
-  def getEmployees: Future[Seq[Employee]] = {
-    db.run(employees.result).map(_.map(convertEmployeeReadEntityToEmployee))
+  def getEmployees: Future[Seq[EmployeeEntity]] = {
+    db.run(employees.result)
   }
 
-  def getEmployee(id: String): Future[Employee] = {
-    db.run(employees.filter(_.id === id).result.head).map(convertEmployeeReadEntityToEmployee)
-  }
-
-  private def convertEmployeeReadEntityToEmployee(e: EmployeeEntity): Employee = {
-    Employee(e.id, e.name, e.gender, e.doj, e.pfn)
+  def getEmployee(id: String): Future[Option[EmployeeEntity]] = {
+    db.run(employees.filter(_.id === id).result.headOption)
   }
 
   def createTable: DBIO[Unit] = employees.schema.createIfNotExists

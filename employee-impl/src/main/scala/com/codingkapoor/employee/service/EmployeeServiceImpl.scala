@@ -3,12 +3,14 @@ package com.codingkapoor.employee.service
 import akka.{Done, NotUsed}
 import com.codingkapoor.employee.api
 import com.codingkapoor.employee.api.{Employee, EmployeeService}
-import com.codingkapoor.employee.persistence.read.EmployeeRepository
+import com.codingkapoor.employee.persistence.read.{EmployeeEntity, EmployeeRepository}
 import com.codingkapoor.employee.persistence.write._
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.api.broker.Topic
 import com.lightbend.lagom.scaladsl.broker.TopicProducer
 import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRegistry}
+import com.lightbend.lagom.scaladsl.api.transport.NotFound
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, employeeRepository: EmployeeRepository) extends EmployeeService {
   private def entityRef(id: String) = persistentEntityRegistry.refFor[EmployeePersistenceEntity](id)
@@ -22,24 +24,31 @@ class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, em
   }
 
   override def getEmployees: ServiceCall[NotUsed, Seq[Employee]] = ServiceCall { _ =>
-    employeeRepository.getEmployees
+    employeeRepository.getEmployees.map(_.map(convertEmployeeReadEntityToEmployee))
   }
 
   override def getEmployee(id: String): ServiceCall[NotUsed, Employee] = ServiceCall { _ =>
-    employeeRepository.getEmployee(id)
+    employeeRepository.getEmployee(id).map { e =>
+      if (e.isDefined) convertEmployeeReadEntityToEmployee(e.get)
+      else throw NotFound(s"No employee found with id = $id")
+    }
   }
 
   override def employeeTopic: Topic[api.EmployeeKafkaEvent] = {
     TopicProducer.singleStreamWithOffset { fromOffset =>
       persistentEntityRegistry.eventStream(EmployeeEvent.Tag, fromOffset)
-        .map(event => (convertEvent(event), event.offset))
+        .map(event => (convertPersistentEntityEventToKafkaEvent(event), event.offset))
     }
   }
 
-  private def convertEvent(eventStreamElement: EventStreamElement[EmployeeEvent]): api.EmployeeKafkaEvent = {
+  private def convertPersistentEntityEventToKafkaEvent(eventStreamElement: EventStreamElement[EmployeeEvent]): api.EmployeeKafkaEvent = {
     eventStreamElement.event match {
       case EmployeeAdded(id, name, gender, doj, pfn) => api.EmployeeAddedKafkaEvent(id, name, gender, doj, pfn)
       case EmployeeUpdated(id, name, gender, doj, pfn) => api.EmployeeUpdatedKafkaEvent(id, name, gender, doj, pfn)
     }
+  }
+
+  private def convertEmployeeReadEntityToEmployee(e: EmployeeEntity): api.Employee = {
+    api.Employee(e.id, e.name, e.gender, e.doj, e.pfn)
   }
 }
