@@ -8,7 +8,7 @@ val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val playJsonDerivedCodecs = "org.julienrf" %% "play-json-derived-codecs" % "4.0.0"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 
-lazy val `lagom-scala-slick` = (project in file("."))
+lazy val `lagom-slickreadside-scala` = (project in file("."))
   .aggregate(`employee-api`, `employee-impl`)
 
 lazy val `employee-api` = (project in file("employee-api"))
