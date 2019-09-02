@@ -9,7 +9,9 @@ import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.api.broker.Topic
 import com.lightbend.lagom.scaladsl.broker.TopicProducer
 import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRegistry}
-import com.lightbend.lagom.scaladsl.api.transport.NotFound
+import com.lightbend.lagom.scaladsl.api.transport.{BadRequest, NotFound}
+import com.lightbend.lagom.scaladsl.persistence.PersistentEntity.InvalidCommandException
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, employeeRepository: EmployeeRepository) extends EmployeeService {
@@ -19,11 +21,15 @@ class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, em
   private def entityRef(id: String) = persistentEntityRegistry.refFor[EmployeePersistenceEntity](id)
 
   override def addEmployee(): ServiceCall[Employee, Done] = ServiceCall { employee =>
-    entityRef(employee.id).ask(AddEmployee(employee))
+    entityRef(employee.id).ask(AddEmployee(employee)).recover {
+        case e: InvalidCommandException => throw BadRequest(e.getMessage)
+      }
   }
 
   override def updateEmployee(id: String): ServiceCall[Employee, Done] = { employee =>
-    entityRef(employee.id).ask(UpdateEmployee(employee))
+    entityRef(employee.id).ask(UpdateEmployee(employee)).recover {
+        case e: InvalidCommandException => throw BadRequest(e.getMessage)
+      }
   }
 
   override def getEmployees: ServiceCall[NotUsed, Seq[Employee]] = ServiceCall { _ =>
