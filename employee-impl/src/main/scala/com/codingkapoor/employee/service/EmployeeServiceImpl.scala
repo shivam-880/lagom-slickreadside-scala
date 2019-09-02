@@ -11,12 +11,15 @@ import com.lightbend.lagom.scaladsl.broker.TopicProducer
 import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRegistry}
 import com.lightbend.lagom.scaladsl.api.transport.{BadRequest, NotFound}
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntity.InvalidCommandException
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, employeeRepository: EmployeeRepository) extends EmployeeService {
 
   import EmployeeServiceImpl._
+
+  private val log = LoggerFactory.getLogger(classOf[EmployeeServiceImpl])
 
   private def entityRef(id: String) = persistentEntityRegistry.refFor[EmployeePersistenceEntity](id)
 
@@ -39,7 +42,12 @@ class EmployeeServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, em
   override def getEmployee(id: String): ServiceCall[NotUsed, Employee] = ServiceCall { _ =>
     employeeRepository.getEmployee(id).map { e =>
       if (e.isDefined) convertEmployeeReadEntityToEmployee(e.get)
-      else throw NotFound(s"No employee found with id = $id")
+      else {
+        val msg = s"No employee found with id = $id."
+        log.error(msg)
+
+        throw NotFound(msg)
+      }
     }
   }
 
